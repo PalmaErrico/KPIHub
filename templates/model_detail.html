@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Details - {{ model.name }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>{{ model.name }}</h1>
+        </div>
+
+        <div class="model-info card">
+            <h2>Model Information</h2>
+            <div class="info-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2cm; row-gap: 0;">
+                 <div class="info-item">
+                    <strong>Description:</strong> {{ model.description }}
+                </div>
+                <div class="info-item">
+                    <strong>Type:</strong> {{ model.type }}
+                </div>
+
+                <div class="info-item">
+                    <strong>Train:</strong> {{ model.train }}
+                </div>
+                <div class="info-item">
+                    <strong>Test:</strong> {{ model.test }}
+
+                 </div>
+                 <div class="info-item">
+                    <strong>Learning_Rate:</strong> {{ model.learning_rate }}
+                    </div>
+                <div class="info-item">
+                    <strong>Optimizer:</strong> {{ model.optimizer }}
+                </div>
+                <div class="info-item">
+                    <strong>Loss_funcion:</strong> {{ model.loss_function }}
+                </div>
+                <div class="info-item">
+                    <strong>Batch_Size:</strong> {{ model.batch_size }}
+                </div>
+                <div class="info-item">
+                    <strong>Epochs:</strong> {{ model.epochs }}
+                </div>
+                {% if model.get('clients') %}
+                <div class="info-item">
+                    <strong>Clients:</strong> {{ model.clients }}
+                </div>
+                {% endif %}
+                {% if model.get('rounds') %}
+                <div class="info-item">
+                    <strong>Rounds:</strong> {{ model.rounds }}</div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="kpi-details card">
+            <h2>Performance Metrics</h2>
+            <div class="kpi-grid" style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 0.5cm;">
+                <div class="kpi-item">
+                    <i class="fas fa-bullseye kpi-icon"></i>
+                    <div class="kpi-value">{{ "%.2f"|format(model.kpi.accuracy * 100) }}%</div>
+                    <div>Accuracy</div>
+                </div>
+                <div class="kpi-item">
+                    <i class="fas fa-exclamation-triangle kpi-icon"></i>
+                    <div class="kpi-value">{{ "%.2f"|format(model.kpi.loss) }}</div>
+                    <div>Loss</div>
+                </div>
+                <div class="kpi-item">
+                    <i class="fas fa-clock kpi-icon"></i>
+                    <div class="kpi-value">{{ model.kpi.execution_time }}s</div>
+                    <div>Execution Time</div>
+                </div>
+                <div class="kpi-item">
+                    <i class="fas fa-memory kpi-icon"></i>
+                    <div class="kpi-value">{{ model.kpi.memory_usage }}MB</div>
+                    <div>Memory Usage</div>
+                </div>
+                <div class="kpi-item">
+                    <i class="fas fa-microchip kpi-icon"></i>
+                    <div class="kpi-value">{{ model.kpi.instruction_count }}</div>
+                    <div>Instruction Count</div>
+                </div>
+            </div>
+        </div>
+        <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+    </div>
+</body>
+</html>

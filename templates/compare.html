@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Model Comparison</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .comparison-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card canvas {
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 0 auto;
+            display: block;
+            padding: 20px;
+        }
+
+        .card h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.4rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Model Comparison</h1>
+            <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+        </div>
+
+        <div class="comparison-grid">
+            <div class="card">
+                <h2>Accuracy Comparison</h2>
+                <canvas id="accuracyChart"></canvas>
+            </div>
+            
+            <div class="card">
+                <h2>Resource Usage</h2>
+                <canvas id="resourceChart"></canvas>
+            </div>
+
+            <div class="card">
+                <h2>Metrics Comparison (Radar)</h2>
+                <canvas id="radarChart"></canvas>
+            </div>
+        </div>
+
+        <div class="comparison-table card">
+            <h2>Detailed Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        {% for model_id, model in models.items() %}
+                        <th>{{ model.name }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Accuracy</td>
+                        {% for model_id, model in models.items() %}
+                        <td>{{ "%.2f"|format(model.kpi.accuracy * 100) }}%</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Loss</td>
+                        {% for model_id, model in models.items() %}
+                        <td>{{ "%.2f"|format(model.kpi.loss) }}</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Execution Time</td>
+                        {% for model_id, model in models.items() %}
+                        <td>{{ model.kpi.execution_time }}s</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Memory Usage</td>
+                        {% for model_id, model in models.items() %}
+                        <td>{{ model.kpi.memory_usage }}MB</td>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                        <td>Instruction Count</td>
+                        {% for model_id, model in models.items() %}
+                        <td>{{ model.kpi.instruction_count }}</td>
+                        {% endfor %}
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get model data from backend
+            fetch('/api/models')
+                .then(response => response.json())
+                .then(data => {
+                    // Create accuracy chart
+                    createLineChart('accuracyChart', data.models);
+                    
+                    // Create resource usage chart
+                    createBarChart('resourceChart', data.models);
+
+                    // Create radar chart
+                    createRadarChart('radarChart', data.models);
+                });
+        });
+    </script>
+</body>
+</html>

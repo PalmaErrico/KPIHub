@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ metadata.title }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>{{ metadata.title }}</h1>
+            <div class="metadata">
+                <span>Author: {{ metadata.author }}</span>
+                <span>Date: {{ metadata.date }}</span>
+                <span>Version: {{ metadata.version }}</span>
+            </div>
+            <div class="dataset-preview">
+                <img src="{{ url_for('static', filename='images/mnist_sample.png') }}" alt="MNIST Dataset Examples" class="mnist-preview">
+            </div>
+        </div>
+
+        <div class="dataset-info card">
+            <h2>Dataset Information</h2>
+            <div class="dataset-grid">
+                <div class="info-item">
+                    <strong>Name:</strong> {{ dataset.name }}
+                </div>
+                <div class="info-item">
+                    <strong>Total Records:</strong> {{ dataset.total_records }}
+                </div>
+                <div class="info-item">
+                    <strong>Image Size:</strong> {{ dataset.image_size }}
+                </div>
+                <div class="info-item">
+                    <strong>Classes:</strong> {{ dataset.classes }}
+                </div>
+            </div>
+            <p class="dataset-description">{{ dataset.description }}</p>
+        </div>
+
+        <div class="kpi-grid">
+            {% for model_id, model in models.items() %}
+            <div class="card">
+                <h2>{{ model.name }}</h2>
+                <a href="{{ url_for('model_detail', model_id=model_id) }}" class="btn">Details</a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="card">
+            <h2>Model Comparison</h2>
+            <a href="{{ url_for('compare') }}" class="btn">Compare Models</a>
+        </div>
+    </div>
+</body>
+</html>
