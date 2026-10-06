@@ -8,19 +8,18 @@
 <body>
     <div class="container">
         <div class="header-section">
-            <h1>{{ metadata.title }}</h1>
+            <h1 class="main-title">{{ metadata.title }}</h1>
             <div class="metadata">
                 <span>Author: {{ metadata.author }}</span>
-                <span>Date: {{ metadata.date }}</span>
+                <span>Created: {{ metadata.created_at }}</span>
+                <span>Last updated: {{ metadata.updated_at }}</span>
                 <span>Version: {{ metadata.version }}</span>
-            </div>
-            <div class="dataset-preview">
-                <img src="{{ url_for('static', filename='images/mnist_sample.png') }}" alt="MNIST Dataset Examples" class="mnist-preview">
             </div>
         </div>
 
         <div class="dataset-info card">
             <h2>Dataset Information</h2>
+            <p class="dataset-description">{{ dataset.description }}</p>
             <div class="dataset-grid">
                 <div class="info-item">
                     <strong>Name:</strong> {{ dataset.name }}
@@ -35,21 +34,27 @@
                     <strong>Classes:</strong> {{ dataset.classes }}
                 </div>
             </div>
-            <p class="dataset-description">{{ dataset.description }}</p>
+        </div>
+
+        <div class="dataset-preview">
+            <img src="{{ url_for('static', filename='images/mnist_sample.png') }}" alt="MNIST Dataset Examples" class="mnist-preview">
         </div>
 
         <div class="kpi-grid">
             {% for model_id, model in models.items() %}
-            <div class="card">
+            <div class="card comparison-option">
                 <h2>{{ model.name }}</h2>
                 <a href="{{ url_for('model_detail', model_id=model_id) }}" class="btn">Details</a>
             </div>
             {% endfor %}
-        </div>
 
-        <div class="card">
-            <h2>Model Comparison</h2>
-            <a href="{{ url_for('compare') }}" class="btn">Compare Models</a>
+            <div class="card comparison-option showdown-card">
+                <h2 class="showdown-title">Model Showdown</h2>
+                <div class="showdown-actions">
+                    <a href="{{ url_for('compare') }}" class="btn">Centralized vs Best FL</a>
+                    <a href="{{ url_for('aggregator_comparison') }}" class="btn">Compare Federated Aggregators</a>
+                </div>
+            </div>
         </div>
     </div>
 </body>

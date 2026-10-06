@@ -8,20 +8,52 @@ app = Flask(__name__)
 # JSON file path
 KPI_DATA_FILE = 'data/kpi_data.json'
 
+FEDERATED_AGGREGATORS = [
+    {'name': 'FedAvg', 'accuracy': 96, 'loss': 0.15},
+    {'name': 'FedMiddleAvg', 'accuracy': 88, 'loss': 0.33},
+    {'name': 'FedAvgMomentum', 'accuracy': 92, 'loss': 0.62}
+]
+
+FEDERATED_DEPLOYMENT = [
+    {'label': 'Desktop application', 'value': 'PyCharm'},
+    {'label': 'Operating system', 'value': 'Linux'},
+    {'label': 'System name', 'value': 'LAPTOP-PKUA4UTD'},
+    {'label': 'Kernel release', 'value': '5.15.146.1-microsoft-standard-WSL2'},
+    {'label': 'Kernel version', 'value': '#1 SMP Thu Jan 11 04:09:03 UTC 2024'},
+    {'label': 'Architecture', 'value': 'x86_64'},
+    {'label': 'Processor', 'value': 'AMD Ryzen 7 5700U'},
+    {'label': 'RAM', 'value': '16 GB'},
+    {'label': 'Python version', 'value': '3.10.12'}
+]
+
+FEDERATED_CONFIGURATION = [
+    {'label': 'Training split', 'value': '89.3%'},
+    {'label': 'Test split', 'value': '10.7%'},
+    {'label': 'Learning rate', 'value': '0.002'},
+    {'label': 'Optimizer', 'value': 'Adam'},
+    {'label': 'Loss function', 'value': 'Cross-entropy'},
+    {'label': 'Metric', 'value': 'Accuracy'},
+    {'label': 'Batch size', 'value': '32'},
+    {'label': 'Epochs per client', 'value': '40'},
+    {'label': 'Number of clients', 'value': '10'},
+    {'label': 'Communication rounds', 'value': '64'}
+]
+
 def load_kpi_data():
     if os.path.exists(KPI_DATA_FILE):
         with open(KPI_DATA_FILE, 'r') as f:
             return json.load(f)
     return {
         'metadata': {
-            'title': 'KPI MNIST',
+            'title': 'KPIHub ',
             'author': 'Palma Errico',
-            'date': '05/04/2024',
-            'version': '1'
+            'created_at': '2024-04-05',
+            'updated_at': '2026-10-06',
+            'version': '2'
         },
         'dataset': {
-            'name': 'MNIST',
-            'description': 'MNIST dataset for handwritten digit recognition',
+            'name': 'EMNIST',
+            'description': 'The EMNIST (Extended MNIST) dataset is an extension of the MNIST dataset, widely used for training and evaluating machine learning models in handwritten digit and character recognition tasks. In this project, the Only_Digits version will be used, which is a subset of the dataset containing only images belonging to the digit classes from 0 to 9.',
             'total_records': 382705,
             'format': 'gzip',
             'image_size': '28x28 px',
@@ -49,7 +81,7 @@ def load_kpi_data():
                 }
             },
             'federated': {
-                'name': 'Federated Model',
+                'name': 'Best Federated Model',
                 'description': 'Federated implementation with client/server architecture',
                 'type': 'fedAvg',
                 'train': '80%',
@@ -91,6 +123,15 @@ def model_detail(model_id):
 @app.route('/compare')
 def compare():
     return render_template('compare.html', models=load_kpi_data()['models'])
+
+@app.route('/aggregators')
+def aggregator_comparison():
+    return render_template(
+        'aggregators.html',
+        aggregators=FEDERATED_AGGREGATORS,
+        deployment=FEDERATED_DEPLOYMENT,
+        configuration=FEDERATED_CONFIGURATION
+    )
 
 @app.route('/api/models')
 def get_models():

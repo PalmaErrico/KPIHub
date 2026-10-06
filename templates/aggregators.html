@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Federated Aggregator Comparison</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .aggregator-charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .aggregator-chart canvas {
+            width: 100%;
+            max-height: 400px;
+        }
+
+        .experiment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .experiment-details table {
+            margin-top: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1>Federated Learning Aggregator Comparison</h1>
+            <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+        </div>
+
+        <p>Comparison of the available accuracy and loss results for each aggregator.</p>
+
+        <div class="experiment-details">
+            <div class="card">
+                <h2>Execution Environment</h2>
+                <table>
+                    <tbody>
+                        {% for item in deployment %}
+                        <tr>
+                            <th>{{ item.label }}</th>
+                            <td>{{ item.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h2>Model Configuration</h2>
+                <table>
+                    <tbody>
+                        {% for item in configuration %}
+                        <tr>
+                            <th>{{ item.label }}</th>
+                            <td>{{ item.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="aggregator-charts">
+            <div class="card aggregator-chart">
+                <h2>Accuracy (%)</h2>
+                <canvas id="aggregatorAccuracyChart"></canvas>
+            </div>
+            <div class="card aggregator-chart">
+                <h2>Loss</h2>
+                <canvas id="aggregatorLossChart"></canvas>
+            </div>
+        </div>
+
+        <div class="comparison-table card">
+            <h2>Detailed Comparison</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Aggregator</th>
+                        <th>Accuracy (%)</th>
+                        <th>Loss</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for aggregator in aggregators %}
+                    <tr>
+                        <td>{{ aggregator.name }}</td>
+                        <td>{{ aggregator.accuracy }}%</td>
+                        <td>{{ "%.2f"|format(aggregator.loss) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const aggregators = {{ aggregators|tojson }};
+        const labels = aggregators.map(aggregator => aggregator.name);
+
+        new Chart(document.getElementById('aggregatorAccuracyChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Accuracy (%)',
+                    data: aggregators.map(aggregator => aggregator.accuracy),
+                    backgroundColor: ['#007bff', '#28a745', '#ffc107']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Accuracy (%)' }
+                    }
+                }
+            }
+        });
+
+        new Chart(document.getElementById('aggregatorLossChart'), {
+            type: 'bar',
+            data: {
+                labels,
+                datasets: [{
+                    label: 'Loss',
+                    data: aggregators.map(aggregator => aggregator.loss),
+                    backgroundColor: ['#007bff', '#28a745', '#ffc107']
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: { display: true, text: 'Loss' }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -23,6 +23,47 @@ body {
     border-radius: 8px;
 }
 
+.main-title {
+    margin: 0;
+    font-size: clamp(2.8rem, 8vw, 5rem);
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    line-height: 1.1;
+    color: #123b67;
+    text-shadow: 0 3px 0 rgba(18, 59, 103, 0.12);
+}
+
+.showdown-title {
+    text-align: center;
+}
+
+.showdown-card {
+    text-align: center;
+}
+
+.comparison-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.comparison-option h2 {
+    min-height: 2.4em;
+}
+
+.comparison-option > .btn,
+.showdown-actions {
+    margin-top: auto;
+}
+
+.showdown-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
 .metadata {
     display: flex;
     justify-content: center;
