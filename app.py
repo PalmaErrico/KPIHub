@@ -27,12 +27,12 @@ FEDERATED_DEPLOYMENT = [
 ]
 
 FEDERATED_CONFIGURATION = [
-    {'label': 'Training split', 'value': '89.3%'},
-    {'label': 'Test split', 'value': '10.7%'},
+    {'label': 'Training split', 'value': '80%'},
+    {'label': 'Test split', 'value': '20%'},
     {'label': 'Learning rate', 'value': '0.002'},
     {'label': 'Optimizer', 'value': 'Adam'},
     {'label': 'Loss function', 'value': 'Cross-entropy'},
-    {'label': 'Metric', 'value': 'Accuracy'},
+    {'label': 'Metrics', 'value': 'accuracy'},
     {'label': 'Batch size', 'value': '32'},
     {'label': 'Epochs per client', 'value': '40'},
     {'label': 'Number of clients', 'value': '10'},
@@ -67,16 +67,17 @@ def load_kpi_data():
                 'type': 'CNN',
                 'train': '80%',
                 'test': '20%',
-                'learning_rate': 0.001,
+                'learning_rate': 0.002,
                 'optimizer': 'Adam',
-                'loss_function': 'MSE Loss',
-                'batch_size': 64,
-                'epochs': 50,
+                'loss_function': 'Cross-entropy',
+                'metrics': 'accuracy',
+                'batch_size': 32,
+                'epochs': 40,
                 'kpi': {
                     'accuracy': 0.95,
                     'loss': 0.05,
                     'execution_time': 120,
-                    'memory_usage': 1024,
+                    'memory_usage': 1.0,
                     'instruction_count': 50000
                 }
             },
@@ -86,19 +87,20 @@ def load_kpi_data():
                 'type': 'fedAvg',
                 'train': '80%',
                 'test': '20%',
-                'learning_rate': 0.1,
-                'optimizer': 'SGD',
-                'loss_function': 'MSE Loss',
+                'learning_rate': 0.002,
+                'optimizer': 'Adam',
+                'loss_function': 'Cross-entropy',
+                'metrics': 'accuracy',
                 'batch_size': 32,
-                'epochs': 15,
-                'rounds': 10,
+                'epochs': 40,
+                'rounds': 64,
                 'clients': 10,
                 'kpi': {
-                    'accuracy': 0.92,
-                    'loss': 0.08,
-                    'execution_time': 180,
-                    'memory_usage': 512,
-                    'instruction_count': 75000
+                    'accuracy': 0.96,
+                    'loss': 0.15,
+                    'execution_time': 648,
+                    'memory_usage': 0.66,
+                    'instruction_count': 268157048
                 }
             }
         }
@@ -117,12 +119,20 @@ def home():
 def model_detail(model_id):
     data = load_kpi_data()
     if model_id in data['models']:
-        return render_template('model_detail.html', model=data['models'][model_id])
+        return render_template(
+            'model_detail.html',
+            model=data['models'][model_id],
+            deployment=FEDERATED_DEPLOYMENT
+        )
     return "Model not found", 404
 
 @app.route('/compare')
 def compare():
-    return render_template('compare.html', models=load_kpi_data()['models'])
+    return render_template(
+        'compare.html',
+        models=load_kpi_data()['models'],
+        deployment=FEDERATED_DEPLOYMENT
+    )
 
 @app.route('/aggregators')
 def aggregator_comparison():

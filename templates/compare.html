@@ -27,6 +27,17 @@
             margin-bottom: 1.5rem;
             font-size: 1.4rem;
         }
+
+        .experiment-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .experiment-details table {
+            margin-top: 0;
+        }
     </style>
 </head>
 <body>
@@ -34,6 +45,46 @@
         <div class="header">
             <h1>Model Showdown</h1>
             <a href="{{ url_for('home') }}" class="btn">Back to Home</a>
+        </div>
+
+        <div class="experiment-details">
+            <div class="card">
+                <h2>Execution Environment</h2>
+                <table>
+                    <tbody>
+                        {% for item in deployment %}
+                        <tr>
+                            <th>{{ item.label }}</th>
+                            <td>{{ item.value }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card">
+                <h2>Model Configuration</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Parameter</th>
+                            <th>{{ models.centralized.name }}</th>
+                            <th>{{ models.federated.name }}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><th>Training split</th><td>{{ models.centralized.get('train', '—') }}</td><td>{{ models.federated.get('train', '—') }}</td></tr>
+                        <tr><th>Test split</th><td>{{ models.centralized.get('test', '—') }}</td><td>{{ models.federated.get('test', '—') }}</td></tr>
+                        <tr><th>Learning rate</th><td>{{ models.centralized.get('learning_rate', '—') }}</td><td>{{ models.federated.get('learning_rate', '—') }}</td></tr>
+                        <tr><th>Optimizer</th><td>{{ models.centralized.get('optimizer', '—') }}</td><td>{{ models.federated.get('optimizer', '—') }}</td></tr>
+                        <tr><th>Loss function</th><td>{{ models.centralized.get('loss_function', '—') }}</td><td>{{ models.federated.get('loss_function', '—') }}</td></tr>
+                        <tr><th>Metrics</th><td>{{ models.centralized.get('metrics', '—') }}</td><td>{{ models.federated.get('metrics', '—') }}</td></tr>
+                        <tr><th>Batch size</th><td>{{ models.centralized.get('batch_size', '—') }}</td><td>{{ models.federated.get('batch_size', '—') }}</td></tr>
+                        <tr><th>Epochs</th><td>{{ models.centralized.get('epochs', '—') }}</td><td>{{ models.federated.get('epochs', '—') }}</td></tr>
+                        <tr><th>Number of clients</th><td>—</td><td>{{ models.federated.get('clients', '—') }}</td></tr>
+                        <tr><th>Communication rounds</th><td>—</td><td>{{ models.federated.get('rounds', '—') }}</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="comparison-grid">
@@ -48,7 +99,7 @@
             </div>
 
             <div class="card">
-                <h2>Metrics Comparison (Radar)</h2>
+                <h2>Computational Efficiency</h2>
                 <canvas id="radarChart"></canvas>
             </div>
         </div>
@@ -86,7 +137,7 @@
                     <tr>
                         <td>Memory Usage</td>
                         {% for model_id, model in models.items() %}
-                        <td>{{ model.kpi.memory_usage }}MB</td>
+                        <td>{{ model.kpi.memory_usage }}GB</td>
                         {% endfor %}
                     </tr>
                     <tr>

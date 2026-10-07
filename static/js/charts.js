@@ -95,9 +95,10 @@ function createRadarChart(canvasId, models) {
                         },
                         color: '#333'
                     },
-                    // keep tick marks small/hidden so only labels are emphasized
                     ticks: {
-                        display: false
+                        display: true,
+                        stepSize: 20,
+                        color: '#666'
                     }
                 }
             }
@@ -225,7 +226,7 @@ function createLineChart(canvasId, models) {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Initial', '25%', '50%', '75%', 'Final'],
+            labels: ['0%', '25%', '50%', '75%', '100%'],
             datasets: [
                 {
                     label: 'Centralized Model (CNN)',
